@@ -364,6 +364,8 @@ class Group extends EventEmitter {
           target = `ws://127.0.0.1:${port}`
         } else if (item.start) {
           target = `ws://127.0.0.1:${item.env.PORT}`
+        } else if (item.target) {
+          target = item.target.replace('http', 'ws')
         } else {
           const { hostname } = url.parse(item.target)
           target = `ws://${hostname}`
