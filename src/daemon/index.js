@@ -43,6 +43,11 @@ const proxy = httpProxy.createServer({
 // Start HTTPS proxy and HTTP server
 proxy.listen(conf.port + 1)
 
+// Handle errors to prevent deamon process to exit
+proxy.on('error', (err) => {
+  log(`Proxy error: ${err.message}`)
+})
+
 app.listen(conf.port, conf.host, function() {
   log(`Server listening on port ${conf.host}:${conf.port}`)
 })
