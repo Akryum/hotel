@@ -1,11 +1,14 @@
 {
-  "name": "hotel",
-  "version": "0.8.7",
+  "name": "@akryum/hotel",
+  "version": "0.8.8",
   "description": "Local domains for everyone and more! ",
   "main": "lib",
   "bin": "lib/cli/bin.js",
   "engines": {
     "node": ">=6"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "test": "ava && npm run lint",
