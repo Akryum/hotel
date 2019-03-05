@@ -44,7 +44,7 @@ const proxy = httpProxy.createServer({
 proxy.listen(conf.port + 1)
 
 // Handle errors to prevent deamon process to exit
-proxy.on('error', (err) => {
+proxy.on('error', err => {
   log(`Proxy error: ${err.message}`)
 })
 
