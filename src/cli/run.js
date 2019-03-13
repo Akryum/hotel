@@ -8,7 +8,7 @@ const signals = ['SIGINT', 'SIGTERM', 'SIGHUP']
 module.exports = {
   // For testing purpose, allows stubbing cp.spawnSync
   _spawnSync(...args) {
-    cp.spawnSync(...args)
+    return cp.spawnSync(...args)
   },
 
   // For testing purpose, allows stubbing process.exit
