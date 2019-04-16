@@ -387,10 +387,13 @@ class Group extends EventEmitter {
     if (req.headers.host) {
       const { host } = req.headers
       const { id, hostname, port } = this.parseHost(host)
+      // Node may not provide port in `host` header
+      const parsedUrl = req.url && this.parseHost(req.url)
 
       // If https make socket go through https proxy on 2001
       // TODO find a way to detect https and wss without relying on port number
-      if (port === '443') {
+      if (port === '443' || (parsedUrl && parsedUrl.port === '443')) {
+        log(`HTTPS Connect → Redirect to HTTP proxy - ${host}`)
         return tcpProxy.proxy(socket, daemonConf.port + 1, hostname)
       }
 
