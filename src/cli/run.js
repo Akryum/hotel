@@ -40,6 +40,7 @@ module.exports = {
 
       nodeCleanup(() => {
         terminate(child, process.cwd())
+        cleanAndExit(0)
       })
 
       // For tests
