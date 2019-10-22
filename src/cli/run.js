@@ -2,13 +2,15 @@ const cp = require('child_process')
 const getPort = require('get-port')
 const servers = require('./servers')
 const getCmd = require('../get-cmd')
+const nodeCleanup = require('node-cleanup')
+const { terminate } = require('../util/terminate')
 
 const signals = ['SIGINT', 'SIGTERM', 'SIGHUP']
 
 module.exports = {
   // For testing purpose, allows stubbing cp.spawnSync
-  _spawnSync(...args) {
-    return cp.spawnSync(...args)
+  _spawn(...args) {
+    return cp.spawn(...args)
   },
 
   // For testing purpose, allows stubbing process.exit
@@ -31,13 +33,28 @@ module.exports = {
       signals.forEach(signal => process.on(signal, cleanAndExit))
 
       const [command, ...args] = getCmd(cmd)
-      const { status, error } = this._spawnSync(command, args, {
+      const child = this._spawn(command, args, {
         stdio: 'inherit',
         cwd: process.cwd()
       })
 
-      if (error) throw error
-      cleanAndExit(status)
+      nodeCleanup(() => {
+        terminate(child, process.cwd())
+      })
+
+      // For tests
+      if (child.error) throw child.error
+      if (child.status) {
+        cleanAndExit(child.status)
+        return
+      }
+
+      child.on('exit', code => {
+        cleanAndExit(code)
+      })
+      child.on('error', error => {
+        throw error
+      })
     }
 
     if (opts.port) {

@@ -15,8 +15,8 @@ test('spawn with port', t => {
 
   // Stub _exit to avoid messing with process.exit
   sinon.stub(run, '_exit')
-  // Stub _spawnSync to immediately return avoid messing with child_process
-  sinon.stub(run, '_spawnSync').callsFake(() => ({ status }))
+  // Stub _spawn to immediately return avoid messing with child_process
+  sinon.stub(run, '_spawn').callsFake(() => ({ status }))
 
   process.chdir(appDir)
 
