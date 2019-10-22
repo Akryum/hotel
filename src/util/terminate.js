@@ -1,12 +1,8 @@
-const util = require('util')
 const cp = require('child_process')
 const path = require('path')
 const { isWindows, isLinux, isMacintosh } = require('./platform')
 
-const execFile = util.promisify(cp.execFile)
-const spawn = util.promisify(cp.spawn)
-
-exports.terminate = async function(childProcess, cwd) {
+exports.terminate = function(childProcess, cwd) {
   if (isWindows) {
     try {
       let options = {
@@ -15,7 +11,7 @@ exports.terminate = async function(childProcess, cwd) {
       if (cwd) {
         options.cwd = cwd
       }
-      await execFile(
+      cp.execSync(
         'taskkill',
         ['/T', '/F', '/PID', childProcess.pid.toString()],
         options
@@ -26,7 +22,7 @@ exports.terminate = async function(childProcess, cwd) {
   } else if (isLinux || isMacintosh) {
     try {
       let cmd = path.resolve(__dirname, './terminate.sh')
-      let result = await spawn(cmd, [childProcess.pid.toString()], {
+      let result = cp.spawnSync(cmd, [childProcess.pid.toString()], {
         cwd
       })
       if (result.error) {
